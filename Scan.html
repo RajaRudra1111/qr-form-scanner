@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>QR to Google Form</title>
+  <script src="https://unpkg.com/html5-qrcode@2.3.7/minified/html5-qrcode.min.js"></script>
+</head>
+<body>
+  <h2>Scan QR Code to Prefill Form</h2>
+  <div id="reader" style="width: 300px;"></div>
+  <div id="status"></div>
+
+  <script>
+    const formBaseURL = "https://docs.google.com/forms/d/e/1FAIpQLSdGtGxlCUt5yUQl_izQvixeRafiXOo0NAASZRHdrAbPQXkzYQ/viewform"; // <-- replace this!
+    const fieldMap = {
+      0: "entry.979804856", // Unique ID
+      1: "entry.756152659", // Student Name
+      2: "entry.1079265153"  // Batch
+      3: "entry.2018124972"  // No. of Adults
+      4: "entry.332067521"  // No. of Childrens
+
+    };
+
+    function onScanSuccess(qrText) {
+      const parts = qrText.split("|");
+      let url = formBaseURL + "?usp=pp_url";
+
+      parts.forEach((part, index) => {
+        if (fieldMap[index]) {
+          url += "&" + fieldMap[index] + "=" + encodeURIComponent(part.trim());
+        }
+      });
+
+      window.location.href = url;
+    }
+
+    const html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
+    html5QrcodeScanner.render(onScanSuccess);
+  </script>
+</body>
+</html>
